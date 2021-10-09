@@ -8,6 +8,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TestController
 {
+    /**
+     * @Route("/", name="index")
+     */
     public function index()
     {
         var_dump("ca fonctionne");
@@ -16,7 +19,7 @@ class TestController
 
 
     /**
-     * @Route("/test/{age<\d+>?0}", name="test", methods={"GET", "POST"},   schemes: {"https", "http"})
+     * @Route("/test/{age<\d+>?0}", name="test", methods={"GET", "POST"}, schemes={"https", "http"})
      */
     public function test(Request $request, $age)
     {
