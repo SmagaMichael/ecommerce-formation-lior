@@ -33,3 +33,7 @@ services:
         arguments:
             $tva: 20
 
+    App\Taxes\Detector:
+        arguments:
+            $seuil: 100
+
