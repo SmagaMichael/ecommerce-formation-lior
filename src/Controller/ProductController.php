@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -22,12 +24,11 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ProductController extends AbstractController
 {
 
-    
+
     #[Route('/{slug}', name: 'product_category')]
     public function category($slug, CategoryRepository $categoryRepository)
     {
@@ -80,6 +81,12 @@ class ProductController extends AbstractController
             $product->setSlug(strtolower($slugger->slug($product->getName())));
             $em ->persist($product);
             $em->flush();
+
+
+            return $this->redirectToRoute('product_show',[
+                'category_slug' => $product->getCategory()->getSlug(),
+                'slug' => $product->getSlug(),
+            ]);
         }
 
         $formView = $form->createView();
@@ -93,7 +100,7 @@ class ProductController extends AbstractController
 
 
     #[Route('/admin/product/{id}/edit', name: 'product_edit')]
-    public function edit($id,ProductRepository $productRepository, Request $request, EntityManagerInterface $em)
+    public function edit($id,ProductRepository $productRepository, Request $request, EntityManagerInterface $em, UrlGeneratorInterface $urlGenerator)
     {
         $product = $productRepository->find($id);
         $form = $this->createForm(ProductType::class,$product);
@@ -102,6 +109,22 @@ class ProductController extends AbstractController
         $form->handleRequest($request);
         if($form->isSubmitted()){
             $em->flush();
+
+            // $url = $urlGenerator->generate('product_show',[
+            //     'category_slug' => $product->getCategory()->getSlug(),
+            //     'slug' => $product->getSlug(),
+            // ]);
+            // $response->headers->set('Location',$url);
+            // $response->setStatusCode(302);
+            
+            // $response = new RedirectResponse($url);
+            // return $response;
+
+            return $this->redirectToRoute('product_show',[
+                'category_slug' => $product->getCategory()->getSlug(),
+                'slug' => $product->getSlug(),
+            ]);
+
         }
 
         $formView = $form->createView();
