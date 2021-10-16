@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Entity\Category;
+use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -68,49 +69,10 @@ class ProductController extends AbstractController
     }
 
     #[Route('/admin/product/create', name: 'product_create')]
-    public function create(FormFactoryInterface $factory, Request $request,SluggerInterface $slugger, EntityManagerInterface $em)
+    public function create(Request $request,SluggerInterface $slugger, EntityManagerInterface $em)
     {
 
-        $builder = $factory->createBuilder(FormType::class, null,[
-            'data_class' => Product::class
-        ]);
-
-        $builder->add('name', TextType::class, [
-            'label' => 'Nom du produit',
-            'attr' => [
-                'placeholder' => 'Tapez le nom du produit'
-            ]
-        ])
-
-            ->add('shortDescription', TextareaType::class, [
-                'label' => 'Description courte',
-                'attr' => [
-                    'placeholder' => 'Tapez une description courte mais parlante pour le visiteur'
-                ]
-
-            ])
-
-            ->add('price', MoneyType::class, [
-                'label' => 'Prix du produit',
-                'attr' => [
-                    'placeholder' => 'Tapez le prix du produit en euro'
-                ]
-            ])
-            ->add('mainPicture', UrlType::class,[
-                'label' => 'image du produit',
-                'attr' => ['placeholder' => 'Tapez une Url d\'image !']
-            ])
-
-            ->add('category', EntityType::class, [
-                'label' => 'Catégorie',
-                'placeholder' => '-- Choisir une catégorie --',
-                'class' => Category::class,
-                'choice_label' => function (Category $category) {
-                    return strtoupper($category->getName());
-                }
-            ]);
-
-        $form = $builder->getForm();
+        $form = $this->createForm(ProductType::class);
 
         $form->handleRequest($request);
         if($form->isSubmitted()){
@@ -119,15 +81,7 @@ class ProductController extends AbstractController
 
             $em ->persist($product);
             $em->flush();
-            
 
-            // $product = new Product;
-            // $product->setName($data['name'])
-            // ->setShortDescription($data['shortDescription'])
-            // ->setPrice($data['price'])
-            // ->setCategory($data['category']);
-
-            dd($product);
         }
 
         $formView = $form->createView();
@@ -135,7 +89,6 @@ class ProductController extends AbstractController
 
         return $this->render('product/create.html.twig', [
             'formView' => $formView
-
         ]);
     }
 }
