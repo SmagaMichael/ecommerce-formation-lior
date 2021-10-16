@@ -2,13 +2,18 @@
 
 namespace App\Controller;
 
-use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\CategoryRepository;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ProductController extends AbstractController
 {
@@ -51,6 +56,57 @@ class ProductController extends AbstractController
            
            
         ]);
+    }
+
+    #[Route('/admin/product/create', name: 'product_create')]
+    public function create(FormFactoryInterface $factory){
+
+        $builder = $factory->createBuilder();
+        
+        $builder->add('name', TextType::class, [
+            'label' => 'Nom du produit',
+            'attr' => ['class' => 'form-control', 
+            'placeholder' => 'Tapez le nom du produit']
+        ])
+
+        ->add('shortDescription', TextareaType::class, [
+            'label' => 'Description courte',
+            'attr' => [
+                'class' => 'form-control', 
+                'placeholder' => 'Tapez une description courte mais parlante pour le visiteur']
+
+        ])
+
+        ->add('price',MoneyType::class, [
+            'label' => 'Prix du produit',
+            'attr' => [
+                'class' => 'form-control', 
+                'placeholder' => 'Tapez le prix du produit en euro']
+        ])
+
+        ->add('category', ChoiceType::class,[
+            'label' => 'Catégorie',
+            'attr' => [
+                'class' => 'form-control',],
+                'placeholder' => '-- Choisir une catégorie --',
+                'choices' => [
+                    'Catégorie 1' => 1,
+                    'Catégorie 2' => 2,
+
+                ]
+
+        ]);
+
+        $form = $builder->getForm();
+
+        $formView = $form->createView();
+
+
+        return $this->render('product/create.html.twig', [
+            'formView' => $formView
+
+        ]);
+
     }
 
 
