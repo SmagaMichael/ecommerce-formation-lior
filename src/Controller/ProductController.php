@@ -59,7 +59,7 @@ class ProductController extends AbstractController
     }
 
     #[Route('/admin/product/create', name: 'product_create')]
-    public function create(FormFactoryInterface $factory){
+    public function create(FormFactoryInterface $factory, CategoryRepository $categoryRepository){
 
         $builder = $factory->createBuilder();
         
@@ -82,19 +82,20 @@ class ProductController extends AbstractController
             'attr' => [
                 'class' => 'form-control', 
                 'placeholder' => 'Tapez le prix du produit en euro']
-        ])
+            ]);
 
-        ->add('category', ChoiceType::class,[
+            $options = [];
+
+            foreach ($categoryRepository->findAll() as $category) {
+                $options[$category->getName()] = $category->getId();
+            }
+
+        $builder->add('category', ChoiceType::class,[
             'label' => 'Catégorie',
             'attr' => [
                 'class' => 'form-control',],
                 'placeholder' => '-- Choisir une catégorie --',
-                'choices' => [
-                    'Catégorie 1' => 1,
-                    'Catégorie 2' => 2,
-
-                ]
-
+                'choices' => $options
         ]);
 
         $form = $builder->getForm();
