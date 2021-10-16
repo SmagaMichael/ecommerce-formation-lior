@@ -28,7 +28,7 @@ class ProductController extends AbstractController
 
         ]);
 
-        if(!$category){
+        if (!$category) {
             throw new NotFoundHttpException("La catégorie demandée n'existe pas !");
         }
 
@@ -42,61 +42,62 @@ class ProductController extends AbstractController
 
 
     #[Route('/{category_slug}/{slug}', name: 'product_show')]
-    public function show($slug, ProductRepository $productRepository){
-       
-       
+    public function show($slug, ProductRepository $productRepository)
+    {
+
+
         $product = $productRepository->findOneBy([
             'slug' => $slug
         ]);
 
-        if(!$product){
+        if (!$product) {
             throw new NotFoundHttpException("le produit demandé n'existe pas !");
         }
 
         return $this->render('product/show.html.twig', [
             'product' => $product,
-           
-           
+
+
         ]);
     }
 
     #[Route('/admin/product/create', name: 'product_create')]
-    public function create(FormFactoryInterface $factory){
+    public function create(FormFactoryInterface $factory)
+    {
 
         $builder = $factory->createBuilder();
-        
+
         $builder->add('name', TextType::class, [
             'label' => 'Nom du produit',
-            'attr' => ['class' => 'form-control', 
-            'placeholder' => 'Tapez le nom du produit']
+            'attr' => [
+                'placeholder' => 'Tapez le nom du produit'
+            ]
         ])
 
-        ->add('shortDescription', TextareaType::class, [
-            'label' => 'Description courte',
-            'attr' => [
-                'class' => 'form-control', 
-                'placeholder' => 'Tapez une description courte mais parlante pour le visiteur']
+            ->add('shortDescription', TextareaType::class, [
+                'label' => 'Description courte',
+                'attr' => [
+                    'placeholder' => 'Tapez une description courte mais parlante pour le visiteur'
+                ]
 
-        ])
+            ])
 
-        ->add('price',MoneyType::class, [
-            'label' => 'Prix du produit',
-            'attr' => [
-                'class' => 'form-control', 
-                'placeholder' => 'Tapez le prix du produit en euro']
+            ->add('price', MoneyType::class, [
+                'label' => 'Prix du produit',
+                'attr' => [
+                    'placeholder' => 'Tapez le prix du produit en euro'
+                ]
             ])
 
 
-        ->add('category', EntityType::class,[
-            'label' => 'Catégorie',
-            'attr' => [
-                'class' => 'form-control',],
+            ->add('category', EntityType::class, [
+                'label' => 'Catégorie',
                 'placeholder' => '-- Choisir une catégorie --',
                 'class' => Category::class,
-                'choice_label' => function(Category $category){
+                'choice_label' => function (Category $category) {
                     return strtoupper($category->getName());
                 }
-        ]);
+            ]);
 
         $form = $builder->getForm();
 
@@ -107,8 +108,5 @@ class ProductController extends AbstractController
             'formView' => $formView
 
         ]);
-
     }
-
-
 }
