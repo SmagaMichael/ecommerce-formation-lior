@@ -18,9 +18,12 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -71,19 +74,19 @@ class ProductController extends AbstractController
 
 
     #[Route('/admin/product/create', name: 'product_create')]
-    public function create(Request $request,SluggerInterface $slugger, EntityManagerInterface $em)
+    public function create(Request $request, SluggerInterface $slugger, EntityManagerInterface $em)
     {
         $product = new Product;
         $form = $this->createForm(ProductType::class, $product);
 
         $form->handleRequest($request);
-        if($form->isSubmitted()){
+        if ($form->isSubmitted()) {
             $product->setSlug(strtolower($slugger->slug($product->getName())));
-            $em ->persist($product);
+            $em->persist($product);
             $em->flush();
 
 
-            return $this->redirectToRoute('product_show',[
+            return $this->redirectToRoute('product_show', [
                 'category_slug' => $product->getCategory()->getSlug(),
                 'slug' => $product->getSlug(),
             ]);
@@ -100,14 +103,35 @@ class ProductController extends AbstractController
 
 
     #[Route('/admin/product/{id}/edit', name: 'product_edit')]
-    public function edit($id,ProductRepository $productRepository, Request $request, EntityManagerInterface $em, UrlGeneratorInterface $urlGenerator)
+    public function edit($id, ProductRepository $productRepository, Request $request, EntityManagerInterface $em, ValidatorInterface $validator)
     {
+
+        // Exemple de Validation pour données simple
+        $age = 150;
+        $resultat = $validator->validate($age, [
+            new LessThanOrEqual([
+                'value' => 120,
+                'message' => "L'âge doit être inférieur à {{ compared_value }} mais vous avez donné {{ value }}"
+            ]),
+            new GreaterThan([
+                'value' => 0,
+                'message' => "L'âge doit être supérieur à 0"
+            ])
+        ]);
+
+        if ($resultat->count() > 0) {
+            dd("Il y a des erreurs");
+        }
+
+        dd("Tout va bien");
+        // ---------------------------------------------------------
+
         $product = $productRepository->find($id);
-        $form = $this->createForm(ProductType::class,$product);
+        $form = $this->createForm(ProductType::class, $product);
 
 
         $form->handleRequest($request);
-        if($form->isSubmitted()){
+        if ($form->isSubmitted()) {
             $em->flush();
 
             // $url = $urlGenerator->generate('product_show',[
@@ -116,15 +140,14 @@ class ProductController extends AbstractController
             // ]);
             // $response->headers->set('Location',$url);
             // $response->setStatusCode(302);
-            
+
             // $response = new RedirectResponse($url);
             // return $response;
 
-            return $this->redirectToRoute('product_show',[
+            return $this->redirectToRoute('product_show', [
                 'category_slug' => $product->getCategory()->getSlug(),
                 'slug' => $product->getSlug(),
             ]);
-
         }
 
         $formView = $form->createView();
