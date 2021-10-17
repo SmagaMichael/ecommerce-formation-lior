@@ -26,14 +26,18 @@ class ProductType extends AbstractType
             'label' => 'Nom du produit',
             'attr' => [
                 'placeholder' => 'Tapez le nom du produit'
-            ]
+            ],
+            'required' => false,
+
         ])
 
             ->add('shortDescription', TextareaType::class, [
                 'label' => 'Description courte',
                 'attr' => [
                     'placeholder' => 'Tapez une description courte mais parlante pour le visiteur'
-                ]
+                ],
+               
+
 
             ])
 
@@ -42,7 +46,8 @@ class ProductType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Tapez le prix du produit en €'
                 ],
-                'divisor' => 100
+                'divisor' => 100,
+                'required' => false,
             ])
 
 
