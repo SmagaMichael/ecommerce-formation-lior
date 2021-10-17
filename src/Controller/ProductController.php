@@ -13,9 +13,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\GreaterThan;
@@ -106,25 +109,59 @@ class ProductController extends AbstractController
     public function edit($id, ProductRepository $productRepository, Request $request, EntityManagerInterface $em, ValidatorInterface $validator)
     {
 
-        // Exemple de Validation pour données simple
-        $age = 150;
-        $resultat = $validator->validate($age, [
-            new LessThanOrEqual([
-                'value' => 120,
-                'message' => "L'âge doit être inférieur à {{ compared_value }} mais vous avez donné {{ value }}"
-            ]),
-            new GreaterThan([
-                'value' => 0,
-                'message' => "L'âge doit être supérieur à 0"
-            ])
-        ]);
 
-        if ($resultat->count() > 0) {
-            dd("Il y a des erreurs");
-        }
+        // Exemple de Validation pour données complexes
+        // $client = [
+        //     'nom' => '',
+        //     'prenom' => 'Lior',
+        //     'voiture' => [
+        //         'marque' => '',
+        //         'couleur' => 'Noire'
+        //     ]
+        // ];
 
-        dd("Tout va bien");
+        // $collection = new Collection([
+        //     'nom' => new NotBlank(['message' => "Le nom ne doit pas être vide"]),
+        //     'prenom' => [
+        //         new NotBlank(['message' => "Le nom ne doit pas être vide"]),
+        //         new Length(['min' => 3, 'minMessage' => "Le prenom ne doit pas faire moins de 34 caractères"])
+        //     ],
+        //     'voiture' => new Collection([
+        //         'marque' => new NotBlank(['message' => "La marque de la voiture est obligatoire"]),
+        //         'couleur' => new NotBlank(['message' => "La couleur de la voiture est obligatoire"])
+        //     ])
+        // ]);
+
+        // $resultat = $validator->validate($client, $collection);
+
+        //        if ($resultat->count() > 0) {
+        //     dd("Il y a des erreurs", $resultat);
+        // }
+
+        // dd("Tout va bien");
+
+
+
+        // Exemple de Validation pour données simples
+        // $age = 150;
+        // $resultat = $validator->validate($age, [
+        //     new LessThanOrEqual([
+        //         'value' => 120,
+        //         'message' => "L'âge doit être inférieur à {{ compared_value }} mais vous avez donné {{ value }}"
+        //     ]),
+        //     new GreaterThan([
+        //         'value' => 0,
+        //         'message' => "L'âge doit être supérieur à 0"
+        //     ])
+        // ]);
+
+        // if ($resultat->count() > 0) {
+        //     dd("Il y a des erreurs");
+        // }
+
+        // dd("Tout va bien");
         // ---------------------------------------------------------
+
 
         $product = $productRepository->find($id);
         $form = $this->createForm(ProductType::class, $product);
