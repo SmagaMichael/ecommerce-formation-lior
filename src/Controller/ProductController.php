@@ -119,7 +119,6 @@ class ProductController extends AbstractController
         //         'couleur' => 'Noire'
         //     ]
         // ];
-
         // $collection = new Collection([
         //     'nom' => new NotBlank(['message' => "Le nom ne doit pas être vide"]),
         //     'prenom' => [
@@ -131,13 +130,10 @@ class ProductController extends AbstractController
         //         'couleur' => new NotBlank(['message' => "La couleur de la voiture est obligatoire"])
         //     ])
         // ]);
-
         // $resultat = $validator->validate($client, $collection);
-
         //        if ($resultat->count() > 0) {
         //     dd("Il y a des erreurs", $resultat);
         // }
-
         // dd("Tout va bien");
 
 
@@ -154,14 +150,23 @@ class ProductController extends AbstractController
         //         'message' => "L'âge doit être supérieur à 0"
         //     ])
         // ]);
-
         // if ($resultat->count() > 0) {
         //     dd("Il y a des erreurs");
         // }
-
         // dd("Tout va bien");
         // ---------------------------------------------------------
 
+        // Validation grace au fichier yaml
+        //     $product = new Product;
+        //     $product->setName("Sa");
+        //     $resultat = $validator->validate($product);
+        //    if ($resultat->count() > 0) {
+        //         dd("Il y a des erreurs", $resultat);
+        //     }
+        //     dd("Tout va bien");
+
+
+        // ---------------------------------------------------------
 
         $product = $productRepository->find($id);
         $form = $this->createForm(ProductType::class, $product);
