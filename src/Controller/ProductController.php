@@ -157,13 +157,12 @@ class ProductController extends AbstractController
         // ---------------------------------------------------------
 
         // Validation grace au fichier yaml
-        //     $product = new Product;
-        //     $product->setName("Sa");
-        //     $resultat = $validator->validate($product);
-        //    if ($resultat->count() > 0) {
-        //         dd("Il y a des erreurs", $resultat);
-        //     }
-        //     dd("Tout va bien");
+            $product = new Product;
+            $resultat = $validator->validate($product);
+           if ($resultat->count() > 0) {
+                dd("Il y a des erreurs", $resultat);
+            }
+            dd("Tout va bien");
 
 
         // ---------------------------------------------------------
