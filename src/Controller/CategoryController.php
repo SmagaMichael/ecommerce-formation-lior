@@ -16,7 +16,11 @@ class CategoryController extends AbstractController
 {
 
 
-    #[Route('/admin/category/create', name: 'category_create')]
+
+
+    /**
+     * @Route("/admin/category/create", name="category_create")
+     */
     public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger)
     {
         $category = new Category;
@@ -48,7 +52,10 @@ class CategoryController extends AbstractController
 
 
 
-    #[Route('/admin/category/{id}/edit', name: 'category_edit')]
+    
+    /**
+     * @Route("/admin/category/{id}/edit", name="category_edit")
+     */
     public function edit($id, CategoryRepository $categoryRepository, Request $request, EntityManagerInterface $em)
     {
         $category = $categoryRepository->find($id);

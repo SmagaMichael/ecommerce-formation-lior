@@ -35,7 +35,9 @@ class ProductController extends AbstractController
 {
 
 
-    #[Route('/{slug}', name: 'product_category')]
+    /**
+     * @Route("/{slug}", name="product_category")
+     */
     public function category($slug, CategoryRepository $categoryRepository)
     {
         $category = $categoryRepository->findOneBy([
@@ -55,7 +57,6 @@ class ProductController extends AbstractController
 
 
 
-    // #[Route('/{category_slug}/{slug}', name: 'product_show')]
 
     /**
      * @Route("/{category_slug}/{slug}", name="product_show")
@@ -80,7 +81,9 @@ class ProductController extends AbstractController
 
 
 
-    #[Route('/admin/product/create', name: 'product_create')]
+     /**
+     * @Route("/admin/product/create", name="product_create")
+     */
     public function create(Request $request, SluggerInterface $slugger, EntityManagerInterface $em)
     {
         $product = new Product;
@@ -109,7 +112,10 @@ class ProductController extends AbstractController
 
 
 
-    #[Route('/admin/product/{id}/edit', name: 'product_edit')]
+    
+     /**
+     * @Route("/admin/product/{id}/edit", name="product_edit")
+     */
     public function edit($id, ProductRepository $productRepository, Request $request, EntityManagerInterface $em, ValidatorInterface $validator)
     {
 
