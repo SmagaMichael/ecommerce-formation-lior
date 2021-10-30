@@ -14,6 +14,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CategoryController extends AbstractController
 {
@@ -58,7 +59,6 @@ class CategoryController extends AbstractController
     
     /**
      * @Route("/admin/category/{id}/edit", name="category_edit")
-     * @IsGranted("ROLE_ADMIN", message="Vous n'avez pas le droit d'accéder à cette ressource")
      */
     public function edit($id, CategoryRepository $categoryRepository, Request $request, EntityManagerInterface $em, Security $security)
     {
@@ -79,7 +79,24 @@ class CategoryController extends AbstractController
 
         // $this->denyAccessUnlessGranted("ROLE_ADMIN", null, "Vous n'avez pas le droit d'accéder à cette ressource");
 
+      
+
         $category = $categoryRepository->find($id);
+
+        if (!$category) {
+            throw new NotFoundHttpException("Cette category n'existe pas");
+        }
+
+        $user = $this->getUser();
+
+        if(!$user ){
+            return $this->redirectToRoute("security_login");
+        }
+        if($user !== $category->getOwner()){
+           throw new AccessDeniedHttpException("Vous n'êtes pas le propriétaire de cette catégorie");
+        }
+
+
 
         $form = $this->createForm(CategoryType::class, $category);
 
