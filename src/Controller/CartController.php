@@ -9,13 +9,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
 class CartController extends AbstractController
 {
     /**
      * @Route("/cart/add/{id}", name="cart_add", requirements={"id":"\d+"})
      */
-    public function add($id, Request $request, ProductRepository $productRepository, SessionInterface $session)
+    public function add($id, Request $request, ProductRepository $productRepository, SessionInterface $session, FlashBagInterface $flashBag)
     {
 
         // 0. Securisation : Est ce que le produit existe ? 
@@ -43,13 +44,12 @@ class CartController extends AbstractController
         $session->set('cart',$cart);
         // $request->getSession()->remove('cart');
 
-        /** @var FlashBag */
-        $flashBag = $session->getBag('flashes');
-        $flashBag->add('success', "Le produit a bien été ajouté au panier");
+        $this->addFlash('success', "Le produit a bien été ajouté au panier");
+
+        // ou en appelant le FlashBagInterface dans la méthode :
+        //   $flashBag->add('success', "Le produit a bien été ajouté au panier");
+
         
-
-        dd($flashBag);
-
         return $this->redirectToRoute('product_show', [
             'category_slug' => $product->getCategory()->getSlug(),
             'slug' => $product->getSlug()
