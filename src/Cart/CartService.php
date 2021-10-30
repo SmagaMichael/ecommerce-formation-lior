@@ -67,7 +67,7 @@ class CartService
 
         foreach ($this->session->get('cart', []) as $id => $qty) {
             $product =  $this->productRepository->find($id);
-            
+
             if (!$product) {
                 continue;
             }
@@ -77,4 +77,32 @@ class CartService
 
         return $detailedCart;
     }
+
+    public function remove(int $id){
+        $cart = $this->session->get('cart', []);
+
+        unset($cart[$id]);
+
+        $this->session->set('cart', $cart);
+    }
+
+    public function decrement(int $id){
+        $cart = $this->session->get('cart', []);
+
+        if (!array_key_exists($id, $cart)) {
+            return;
+        }
+
+        //soit le produit est a 1 et il faut le supprimé
+        if ($cart[$id] === 1) {
+            $this->remove($id);
+            return;
+        }
+
+        //soit le produit est a + de 1 et il faut le décrémenté
+        $cart[$id]--;
+        $this->session->set('cart', $cart);
+
+    }
+
 }

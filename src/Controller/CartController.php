@@ -27,32 +27,74 @@ class CartController extends AbstractController
             throw $this->createAccessDeniedException("Le produit $id n'existe pas ! ");
         }
 
-     $cartService->add($id);
+        $cartService->add($id);
 
         $this->addFlash('success', "Le produit a bien été ajouté au panier");
 
         // ou en appelant le FlashBagInterface dans la méthode :
         //   $flashBag->add('success', "Le produit a bien été ajouté au panier");
 
-        
+        if($request->query->get('returnToCart')){
+            return $this->redirectToRoute("cart_show");
+        }
+
+
         return $this->redirectToRoute('product_show', [
             'category_slug' => $product->getCategory()->getSlug(),
             'slug' => $product->getSlug()
         ]);
-     
     }
 
     /**
      * @Route("/cart", name="cart_show")
      */
-    public function show(SessionInterface $session, ProductRepository $productRepository, CartService $cartService){
+    public function show(SessionInterface $session, ProductRepository $productRepository, CartService $cartService)
+    {
 
-       $detailedCart = $cartService->getDetailedCartItems();
+        $detailedCart = $cartService->getDetailedCartItems();
         $total = $cartService->getTotal();
- 
+
         return $this->render('cart/index.html.twig', [
             'items' => $detailedCart,
             'total' => $total
         ]);
+    }
+
+
+
+    /**
+     * @Route("/cart/delete/{id}", name="cart_delete", requirements={"id": "\d+"})
+     */
+    public function delete($id, ProductRepository $productRepository, CartService $cartService)
+    {
+        $product = $productRepository->find($id);
+
+        if (!$product) {
+            throw $this->createNotFoundException("Le produit $id n'existe pas et ne peux donc pas être supprimé");
+        }
+
+        $cartService->remove($id);
+
+        $this->addFlash("success", "Le produit a bien été supprimé du panier");
+
+        return $this->redirectToRoute("cart_show");
+    }
+
+    /**
+     * @Route("/cart/decrement/{id}", name="cart_decrement", requirements={"id": "\d+"})
+     */
+    public function decrement($id, CartService $cartService, ProductRepository $productRepository)
+    {
+        $product = $productRepository->find($id);
+
+        if (!$product) {
+            throw $this->createNotFoundException("Le produit $id n'existe pas et ne peux donc pas être décrementé");
+        }
+
+        $cartService->decrement($id);
+
+        $this->addFlash("success", "Le produit a bien été décrémenté");
+
+        return $this->redirectToRoute("cart_show");
     }
 }
