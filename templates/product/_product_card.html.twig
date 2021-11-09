@@ -4,8 +4,7 @@
 	<div class="card-body">
 		<h4 class="card-title">
 			{{p.name}}
-			({{p.price / 100}}
-			&euro; )</h4>
+			({{p.price | amount}})</h4>
 		<span class="badge bg-info">
 			{{p.category.name}}
 		</span>
