@@ -1,0 +1,20 @@
+.card{
+    height: 100%;
+}
+
+.btn-detail{
+    bottom: 0;
+    position: absolute;
+    margin: 10px;
+    left: 0;
+}
+.btn-add{
+    bottom: 0;
+    position: absolute;
+    margin: 10px;
+    right: 0;
+}
+
+.card-text{
+    margin-bottom: 2rem !important;
+}

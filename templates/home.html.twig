@@ -8,7 +8,7 @@
 
 	<div class="row">
 		{% for product in products %}
-			<div class="col">
+			<div class="col-12 col-md-4 col-lg-4">
 				{% include "product/_product_card.html.twig" with {'p': product } %}
 			</div>
 		{% endfor %}
@@ -18,21 +18,31 @@
 	<p>
 		Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nesciunt corrupti repellat, repudiandae excepturi iure inventore autem voluptate non unde quis neque, ab officia magni nihil nemo eos natus doloribus possimus?</p>
 
-	<div class="row">
-		{% include "shared/_assurance.html.twig" with  {
+	<div class="row mb-4">
+		<div class="col-12 col-md-4 col-lg-4">
+
+			{% include "shared/_assurance.html.twig" with  {
             'color': 'primary',
         'icone': 'fas fa-truck',
         'text': "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Soluta error blanditiis beatae molestiae et sed!",}%}
+		</div>
 
-		{% include "shared/_assurance.html.twig" with  {
+		<div class="col-12 col-md-4 col-lg-4">
+
+			{% include "shared/_assurance.html.twig" with  {
             'color': 'success',
         'icone': 'fas fa-check',
         'text': "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Soluta error blanditiis beatae molestiae et sed!",}%}
+		</div>
 
-		{% include "shared/_assurance.html.twig" with  {
+		<div class="col-12 col-md-4 col-lg-4">
+
+			{% include "shared/_assurance.html.twig" with  {
             'color': 'warning',
         'icone': 'fas fa-lock',
         'text': "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Soluta error blanditiis beatae molestiae et sed!",}%}
+		</div>
+
 
 	</div>
 
